@@ -7,43 +7,30 @@ let nomes = [];
 let pesos = [];
 let alturas = [];
 
-let arquivoTxt = "Dados.txt"
-let inputUsuario = parseInt(promptSync("1 - Cadastrar Pessoa | X - Qualquer tecla para sair "));
+let nomePasta = promptSync("Digite o nome da pasta que deseja salvar seus dados: ");
+let caminhoPasta = promptSync("Digite o diretório que deseja salvar seus dados, exemplo -> (C:/Users/DES-MH/): ");
+let caminhoDiretorioCompleto = path.join(caminhoPasta, nomePasta);
+fs.mkdirSync(caminhoDiretorioCompleto, {recursive:true});
 
+let caminhoArquivoTxt = path.join(caminhoDiretorioCompleto, "Dados.txt");
 
-while(inputUsuario == 1){
+while(true){
 
-    let diretorioInput = promptSync("Digite o nome da pasta deseja salvar seu documento: ");
-    if(isNaN(diretorioInput)){   
-        const destino = promptSync("Digite aonde quer salvar sua pasta, o diretório. Exemplo:(C:/Users/DES-MH/)")
-        const origem = path.join(__dirname);
-        fs.mkdirSync(diretorioInput, {recursive:true});
-        fs.cpSync(origem, destino, {recursive:true})
-
-    let nome = promptSync("Digite o nome da pessoa: ");
+    let nome = promptSync("Digite o nome para cadastrar: ");
     nomes.push(nome);
-    fs.appendFileSync(arquivoTxt, `${nome}`, "utf-8");
-
-    let peso = parseFloat(promptSync("Digite o peso da pessoa: "));
+    let peso = parseFloat(promptSync("Digite o peso para cadastrar: "));
     pesos.push(peso);
-    fs.appendFileSync(arquivoTxt, ` ${peso} `, "utf-8");
-
-    let altura = parseFloat(promptSync("Digite a altura da pessoa: "));
+    let altura = parseFloat(promptSync("Digite a altura para cadastrar: "));
     alturas.push(altura);
-    fs.appendFileSync(arquivoTxt, `${altura}\n`, "utf-8");
 
-    
+    fs.appendFileSync(caminhoArquivoTxt, `${nome}\t${peso}\t${altura}\n`, "utf-8");
 
-    let inputUsuario = promptSync("Deseja continuar? (s/n)");
-    if (inputUsuario == "s"){
+    let inputNovamente = promptSync("Deseja continuar? (s/n)");
+    if(inputNovamente == "s"){
         continue;
-    } else {
-        console.log(`Dados:\nNomes:${nomes}\nPesos:${pesos}\nAlturas:${alturas}`);
+    } else{
+        const resultadoDados = fs.readFileSync(caminhoArquivoTxt, {encoding:'utf8'});
+        console.log(`Conteudo do arquivo:\n${resultadoDados}`);
         break;
     }
-
-    }
-    console.log("Digite um nome válido");
-
-
 }
